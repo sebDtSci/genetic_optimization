@@ -1,27 +1,42 @@
 #include <iostream>
-#include <cmath>
+#include <vector>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
-double fitness(double x) {
-    return -x * x;
-}
-
-double gradient(double x) {
-    return -2 * x;
+int fitness(int x) {
+    return x * x;
 }
 
 int main() {
-    double x = 50.0;  
-    double learning_rate = 0.1; 
-    int max_iterations = 100;  
+    srand(time(0));
 
-    for (int i = 0; i < max_iterations; ++i) {
-        double grad = gradient(x);
-        x = x + learning_rate * grad; 
-        std::cout << "Itération " << i << ": x = " << x << ", fitness = " << fitness(x) << "\n";
-        if (std::abs(grad) < 1e-6) {
-            break;
+    const int population_size = 10;
+    std::vector<int> population(population_size);
+    for (auto &individual : population) {
+        individual = rand() % 100; 
+    }
+
+    for (int generation = 0; generation < 100; ++generation) {
+        std::sort(population.begin(), population.end(), [](int a, int b) {
+            return fitness(a) > fitness(b);
+        });
+        population.resize(population_size / 2);
+
+        while (population.size() < population_size) {
+            int parent1 = population[rand() % (population_size / 2)];
+            int parent2 = population[rand() % (population_size / 2)];
+            int child = (parent1 + parent2) / 2; 
+            population.push_back(child);
+        }
+
+        for (auto &individual : population) {
+            if (rand() % 100 < 5) { 
+                individual += rand() % 10 - 5;
+            }
         }
     }
-    std::cout << "Solution optimale : x = " << x << ", fitness = " << fitness(x) << "\n";
+
+    std::cout << "Meilleur individu : " << population[0] << " avec une fitness de " << fitness(population[0]) << "\n";
     return 0;
 }
