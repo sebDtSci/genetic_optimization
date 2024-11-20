@@ -1,42 +1,30 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <cstdlib>
-#include <ctime>
+#include <cmath> // Pour std::abs dans le cas où tu souhaiterais implémenter des conditions d'arrêt basées sur la précision
 
-int fitness(int x) {
+// Fonction fitness qui correspond à f(x) = x^2, utilisant long long
+long long fitness(long long x) {
     return x * x;
+}
+
+// Dérivée de la fonction fitness f'(x) = 2*x, utilisant long long
+long long fitness_derivative(long long x) {
+    return 2 * x;
 }
 
 int main() {
     srand(time(0));
 
-    const int population_size = 10;
-    std::vector<int> population(population_size);
-    for (auto &individual : population) {
-        individual = rand() % 100; 
+    long long x = rand() % 100; // Début avec une valeur initiale aléatoire pour x
+    double learning_rate = 0.01; // Taux d'apprentissage pour la mise à jour de x, réduit pour plus de contrôle
+    int max_iterations = 100; // Nombre maximal d'itérations
+
+    std::cout << "Valeur initiale de x : " << x << "\n";
+
+    for (int i = 0; i < max_iterations; ++i) {
+        x += (long long)(learning_rate * fitness_derivative(x)); // Mise à jour de x en fonction de la dérivée
+        std::cout << "Iteration " << i + 1 << ": x = " << x << ", fitness = " << fitness(x) << "\n";
     }
 
-    for (int generation = 0; generation < 100; ++generation) {
-        std::sort(population.begin(), population.end(), [](int a, int b) {
-            return fitness(a) > fitness(b);
-        });
-        population.resize(population_size / 2);
-
-        while (population.size() < population_size) {
-            int parent1 = population[rand() % (population_size / 2)];
-            int parent2 = population[rand() % (population_size / 2)];
-            int child = (parent1 + parent2) / 2; 
-            population.push_back(child);
-        }
-
-        for (auto &individual : population) {
-            if (rand() % 100 < 5) { 
-                individual += rand() % 10 - 5;
-            }
-        }
-    }
-
-    std::cout << "Meilleur individu : " << population[0] << " avec une fitness de " << fitness(population[0]) << "\n";
+    std::cout << "Valeur finale de x : " << x << " avec une fitness de " << fitness(x) << "\n";
     return 0;
 }
