@@ -43,8 +43,8 @@ int main() {
 
         // Mutation
         for (int &individual : population) {
-            if (rand() % 100 < 5) {
-                individual += rand() % 10 - 5;
+            if (rand() % 100 < 15) { // Augmentation de la probabilité de mutation
+                individual += rand() % 20 - 10; // Augmentation de l'intensité de la mutation
             }
         }
     }

@@ -13,13 +13,15 @@ int main() {
     srand(42); // Initialisation de la graine aléatoire identique
 
     long long x = rand() % 100; // Valeur initiale de x identique au premier individu génétique
-    double learning_rate = 0.01;
+    double learning_rate = 0.1; // Augmentation du taux d'apprentissage
     int max_iterations = 100;
 
     std::cout << "Valeur initiale de x : " << x << "\n";
 
     for (int i = 0; i < max_iterations; ++i) {
         x += static_cast<long long>(learning_rate * fitness_derivative(x));
+        // Ajout d'une condition pour empêcher x de devenir trop grand inutilement
+        if (fitness(x) > 1000000) break; 
         std::cout << "Itération " << i + 1 << ": x = " << x << ", fitness = " << fitness(x) << "\n";
     }
 
